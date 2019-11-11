@@ -19,27 +19,45 @@ std::vector<piece> initalBoard(const int boardSize){
   return v;
 }
 
+//prints out the board values
 void boardPrint(int boardSize, std::vector<piece> board){
   for(int i =0; i < boardSize; i++){
     for(int j=0;j<boardSize;j++){
       if(board.at(j+boardSize*i).state ==0){std::cout << "+ ";}
       else if(board.at(j+boardSize*i).state == 1){std::cout << "B ";}
       else if(board.at(j+boardSize*i).state == 2){std::cout << "W ";}
-      std::cout << board.at(j+boardSize*i).state << ' ' << j+boardSize*i << ' ';
+      // std::cout << board.at(j+boardSize*i).state << ' ' << j+boardSize*i << ' ';
     }
     std::cout << '\n';
   }
 }
 
+//
 piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
   int colour;
   if(isBlack == true){colour = 1;}else{colour =2;}
-  std::cout << colour << '\n';
+  // std::cout << colour << '\n';
   if(v.at(i+j*N).state == 0){
     v.at(i+j*N).state = colour;
   }else{return v.at(i+j*N);}
-  std::cout << v.at(i+j*N).state << '\n';
+  // std::cout << v.at(i+j*N).state << '\n';
   return v.at(i+j*N);
+}
+
+//caculates the liberty of each piece
+std::vector<piece> updateLib(std::vector<piece> v, int boardSize){
+  for(int i = 0; i < boardSize; i++){
+    for(int j =0; j < boardSize; j++){
+      if(v.at(i*boardSize + j).state != 0){
+        v.at(i*boardSize + j).liberty = 0;
+        if(i != 0 && v.at((i-1)*boardSize + j ).state == 0){v.at(i*boardSize + j).liberty += 1; }
+        if(i != boardSize && v.at((i+1)*boardSize + j).state == 0) {v.at(i*boardSize + j).liberty += 1; }
+        if(j != 0 && v.at(i*boardSize + j - 1).state == 0) {v.at(i*boardSize + j).liberty += 1; }
+        if(j != boardSize && v.at(i*boardSize + j + 1).state == 0 ) {v.at(i*boardSize + j).liberty += 1;}
+        }
+    }
+  }
+  return v;
 }
 
 int main(){
@@ -58,7 +76,6 @@ int main(){
   while(gameRunning == true){
     //dectects player
     if(isBlack == true){isBlack = false;}else{isBlack =true;}
-    std::cout << isBlack;
 
     //player possition
     std::cout << "please input position ";
