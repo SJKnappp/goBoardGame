@@ -50,11 +50,23 @@ std::vector<piece> updateLib(std::vector<piece> v, int boardSize){
     for(int j =0; j < boardSize; j++){
       if(v.at(i*boardSize + j).state != 0){
         v.at(i*boardSize + j).liberty = 0;
-        if(i != 0 && v.at((i-1)*boardSize + j ).state == 0){v.at(i*boardSize + j).liberty += 1; }
-        if(i != boardSize && v.at((i+1)*boardSize + j).state == 0) {v.at(i*boardSize + j).liberty += 1; }
-        if(j != 0 && v.at(i*boardSize + j - 1).state == 0) {v.at(i*boardSize + j).liberty += 1; }
-        if(j != boardSize && v.at(i*boardSize + j + 1).state == 0 ) {v.at(i*boardSize + j).liberty += 1;}
+        if(i != 0) { if(v.at((i-1)*boardSize + j ).state == 0){v.at(i*boardSize + j).liberty += 1; }}
+        if(i != boardSize - 1){ if( v.at((i+1)*boardSize + j).state == 0) {v.at(i*boardSize + j).liberty += 1; }}
+        if(j != 0 ){ if ( v.at(i*boardSize + j - 1).state == 0) {v.at(i*boardSize + j).liberty += 1; }}
+        if(j != boardSize - 1) {if ( v.at(i*boardSize + j + 1).state == 0 ) {v.at(i*boardSize + j).liberty += 1;}}
         }
+    }
+  }
+  return v;
+}
+
+std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
+  for(int i = 0; i < boardSize; i++){
+    for(int j =0; j < boardSize; j++){
+      if(v.at((i)*boardSize + j).liberty == 0){
+        v.at((i)*boardSize + j).state = 0;
+        v.at((i)*boardSize + j).group = 0;
+      }
     }
   }
   return v;
@@ -100,6 +112,9 @@ int main(){
 
     if(isBlack == true){ board.at(x_at + y_at * boardSize).state = 1; }
     else{ board.at(x_at + y_at * boardSize).state = 2; }
+
+    board = updateLib(board, boardSize);
+    board = remove(board, boardSize, isBlack);
 
 
     boardPrint(boardSize, board);
