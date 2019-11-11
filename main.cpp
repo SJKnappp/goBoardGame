@@ -36,28 +36,43 @@ piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
   if(v.at(i+j*N).state == 0){
     v.at(i+j*N).state = colour;
   }else{return v.at(i+j*N);}
+  return v.at(i+j*N);
 }
 
 int main(){
+  //initalise variables
   const int boardSize = 19;
   bool isBlack = true;
-  bool acceptedVal; int x_at; int y_at;
+  bool acceptedVal; int x_at; int y_at; int y_ten;
   std::string input;
   bool gameRunning = true;
+
+  //setup the board and print intial condition
   std::vector<piece> board = initalBoard(boardSize);
   boardPrint(boardSize, board);
+
+  //start main loop
   while(gameRunning == true){
+    //dectects player
+    if(isBlack == true){isBlack = false;}else{isBlack =true;}
+    std::cout << isBlack;
+
+    //player possition
     std::cout << "please input position ";
     if(isBlack == true){std::cout << "black " << '\n';} else{std::cout << "white ";} std::cout << '\n';
     std::cin >> input;
     acceptedVal = false;
     while(acceptedVal == false){
-      if(input.length() == 2){acceptedVal = true;}else{
-        std::cout << "please renter value ";std::cin >> input;
+      if(input.length() == 2 || input.length() == 3){acceptedVal = true;
+        x_at = input.at(0) - 97;
+        y_at = input.at(1) - 49;
+        if(input.length() == 3){y_ten = input.at(3) - 49;
+          y_at = 10*y_at + y_ten;}
+        if((x_at < 0 || y_at < 0 || x_at > 19 || y_at > 19) && board.at(y_at*boardSize+x_at).state == 0){ break; }
       }
+      std::cout << "please renter value ";std::cin >> input;
+
     }
-    x_at = input.at(0) - 97;
-    y_at = input.at(1) - 49;
 
     board.at(x_at + y_at*boardSize) = updatePiece(board, x_at, y_at, boardSize, isBlack);
 
