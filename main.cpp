@@ -25,6 +25,7 @@ void boardPrint(int boardSize, std::vector<piece> board){
       if(board.at(j+boardSize*i).state ==0){std::cout << "+ ";}
       else if(board.at(j+boardSize*i).state == 1){std::cout << "B ";}
       else if(board.at(j+boardSize*i).state == 2){std::cout << "W ";}
+      std::cout << board.at(j+boardSize*i).state << ' ' << j+boardSize*i << ' ';
     }
     std::cout << '\n';
   }
@@ -33,16 +34,18 @@ void boardPrint(int boardSize, std::vector<piece> board){
 piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
   int colour;
   if(isBlack == true){colour = 1;}else{colour =2;}
+  std::cout << colour << '\n';
   if(v.at(i+j*N).state == 0){
     v.at(i+j*N).state = colour;
   }else{return v.at(i+j*N);}
+  std::cout << v.at(i+j*N).state << '\n';
   return v.at(i+j*N);
 }
 
 int main(){
   //initalise variables
   const int boardSize = 19;
-  bool isBlack = true;
+  bool isBlack = false;
   bool acceptedVal; int x_at; int y_at; int y_ten;
   std::string input;
   bool gameRunning = true;
@@ -62,21 +65,24 @@ int main(){
     if(isBlack == true){std::cout << "black " << '\n';} else{std::cout << "white ";} std::cout << '\n';
     std::cin >> input;
     acceptedVal = false;
+
+    //while loop for accepting values
     while(acceptedVal == false){
       if(input.length() == 2 || input.length() == 3){
         x_at = input.at(0) - 97;
         y_at = input.at(1) - 49;
         if(input.length() == 3){y_ten = input.at(3) - 49;  y_at = 10*y_at + y_ten;}
-        std::cout << x_at << y_at << '\n';
+        // std::cout << x_at << y_at << '\n';
         if(x_at >= 0 && y_at >= 0 && x_at < 19 && y_at < 19 && board.at(y_at*boardSize+x_at).state == 0){ break; }
       }
       std::cout << "please renter value "; std::cin >> input;
     }
 
     board.at(x_at + y_at*boardSize) = updatePiece(board, x_at, y_at, boardSize, isBlack);
+    // std::cout << board.at(x_at+y_at*boardSize).state << '\n';
 
-    if(isBlack == true){ board.at(x_at + y_at * boardSize).state = true; }
-    else{ board.at(x_at + y_at * boardSize).state = false; }
+    if(isBlack == true){ board.at(x_at + y_at * boardSize).state = 1; }
+    else{ board.at(x_at + y_at * boardSize).state = 2; }
 
 
     boardPrint(boardSize, board);
