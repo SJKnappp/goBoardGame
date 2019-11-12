@@ -78,12 +78,17 @@ std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
 }
 
 std::vector<piece> removeGroup(std::vector<piece> v, int boardSize, bool isBlack, int group1, int group2){
+
+std::cout << "/* message */" << group1  << group2 <<' ';
   int stone;
   if(isBlack == true){stone = 1;}else{stone = 2;}
+  std::cout << isBlack << '\n';
   for(int i = 0; i < boardSize; i++){
     for(int j =0; j < boardSize; j++){
-      if(v.at((i)*boardSize + j).state == stone && v.at((i)*boardSize + j).group == group2){
-          v.at((i)*boardSize + j).group = group1;
+      if(v.at(i*boardSize + j).state == stone && v.at(i*boardSize + j).group == group2){
+        std::cout << "test" << v.at(i*boardSize + j).group << '\n';
+          v.at(i*boardSize + j).group = group1;
+          std::cout << v.at(i*boardSize + j).group << ' ' << i*boardSize + j <<'\n';
       }
     }
   }
@@ -106,7 +111,7 @@ int main(){
   //start main loop
   while(gameRunning == true){
     //dectects player
-    if(isBlack == true){isBlack = false;}else{isBlack =true;}
+    // if(isBlack == true){isBlack = false;}else{isBlack =true;}
 
     //player possition
     std::cout << "please input position ";
@@ -133,18 +138,23 @@ int main(){
     else{ board.at(x_at + y_at * boardSize).state = 2; }
 
     int groups = 0;
-    if(x_at != 0){if(board.at(x_at + y_at * boardSize).state == board.at(x_at - 1 + y_at * boardSize).state ){
-      board.at(x_at + y_at * boardSize).group = board.at(x_at - 1+ y_at * boardSize).group; groups +=1;
-    }}if(x_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + 1 + y_at * boardSize).state ){
-      if(groups > 1){removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + 1 + y_at * boardSize).group);}
-      board.at(x_at + y_at * boardSize).group = board.at(x_at + 1 + y_at * boardSize).group; groups+=1;
-    }}if(y_at != 0){if(board.at(x_at + y_at * boardSize).state == board.at(x_at - 1 + (y_at -1 ) * boardSize).state ){
-      if(groups > 1){removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at - 1)* boardSize).group);}
-      board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at - 1) * boardSize).group;groups+=1;
-    }}if(y_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at - 1 + (y_at + 1) * boardSize).state ){
-      if(groups > 1){removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at + 1) * boardSize).group);}
-      board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at + 1) * boardSize).group;groups+=1;
-    }}if(groups == 0 && isBlack == true){board.at(x_at + y_at * boardSize).group = blackGroups.size(); blackGroups.push_back(0);}
+    //left
+    if(x_at != 0){if(board.at(x_at + y_at * boardSize).state == board.at(x_at - 1 + y_at * boardSize).state ){std::cout << "test" << '\n';
+      board.at(x_at + y_at * boardSize).group = board.at(x_at - 1+ y_at * boardSize).group; groups +=1;}}
+    //right
+    if(x_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + 1 + y_at * boardSize).state ){
+      if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + 1 + y_at * boardSize).group);}
+      board.at(x_at + y_at * boardSize).group = board.at(x_at + 1 + y_at * boardSize).group; groups+=1;}}
+    //up
+    if(y_at != 0){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + (y_at -1 ) * boardSize).state ){
+      if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at - 1)* boardSize).group);}
+      board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at - 1) * boardSize).group;groups+=1;}}
+    //down
+    if(y_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + (y_at + 1) * boardSize).state ){
+      if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at + 1) * boardSize).group);}
+      board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at + 1) * boardSize).group;groups+=1;}}
+
+    if(groups == 0 && isBlack == true){board.at(x_at + y_at * boardSize).group = blackGroups.size(); blackGroups.push_back(0);}
     if(groups == 0 && isBlack == false){board.at(x_at + y_at * boardSize).group = whiteGroups.size(); whiteGroups.push_back(0);}
 
 
