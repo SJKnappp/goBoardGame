@@ -1,3 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <string>   
+#include <string>
+
+namespace board
+{
+  class game
+  {
+  public:
+
+  private:
+  };
+}
