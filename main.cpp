@@ -134,10 +134,10 @@ int main(){
 
     //while loop for accepting values
     while(acceptedVal == false){
-      if(input.length() == 2 || input.length() == 3){
+      if(input.length() == 2 || input.length() ==3 ){
         x_at = input.at(0) - 97;
         y_at = input.at(1) - 49;
-        if(input.length() == 3){y_ten = input.at(3) - 49;  y_at = 10*y_at + y_ten;}
+        if(input.length() == 3){y_at = (input.at(1)-48)*10+(input.at(2)-48)-1;}
         // std::cout << x_at << y_at << '\n';
         if(x_at >= 0 && y_at >= 0 && x_at < 19 && y_at < 19 && board.at(y_at*boardSize+x_at).state == 0){ break; }
       }
