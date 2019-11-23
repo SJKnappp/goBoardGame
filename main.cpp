@@ -80,12 +80,18 @@ std::vector<int> updateLib(std::vector<piece> v, int boardSize, bool isBlack, st
 }
 
 //remove any peice with liberty = 0
-std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
+std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack, std::vector<int> group){
+  std::cout << "/* message */" << '\n';
+  int pstate; //colour state
+  if(isBlack == true){pstate = 2;}else{pstate = 1;}//looks at opersit colour
+
   for(int i = 0; i < boardSize; i++){
     for(int j =0; j < boardSize; j++){
-      if(v.at((i)*boardSize + j).liberty == 0){
-        v.at((i)*boardSize + j).state = 0;
-        v.at((i)*boardSize + j).group = 0;
+      if(v.at((i)*boardSize + j).state == pstate){
+        if(group.at(v.at((i)*boardSize + j).group) ==0){
+          v.at((i)*boardSize + j).state = 0;
+          v.at((i)*boardSize + j).group = 0;
+        }
       }
     }
   }
@@ -96,7 +102,8 @@ std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
 std::vector<piece> removeGroup(std::vector<piece> v, int boardSize, bool isBlack, int group1, int group2){
 
   int stone;
-  if(isBlack == true){stone = 1;}else{stone = 2;}
+  if(isBlack == true){stone = 1;}else{stone = 2;} //detects which stone colour
+
   std::cout << isBlack << '\n';
   for(int i = 0; i < boardSize; i++){
     for(int j =0; j < boardSize; j++){
@@ -175,12 +182,19 @@ int main(){
     if(groups == 0 && isBlack == true){board.at(x_at + y_at * boardSize).group = blackGroups.size(); blackGroups.push_back(0);}
     if(groups == 0 && isBlack == false){board.at(x_at + y_at * boardSize).group = whiteGroups.size(); whiteGroups.push_back(0);}
 
-    //update board state
-    board = remove(board, boardSize, isBlack);
+
 
     //count group liberty
-    if(isBlack == true){whiteGroups = updateLib(board, boardSize, isBlack, whiteGroups); blackGroups = updateLib(board, boardSize, isBlack, blackGroups);}
-    else{whiteGroups = updateLib(board, boardSize, isBlack, blackGroups); blackGroups = updateLib(board, boardSize, isBlack, whiteGroups);}
+    if(isBlack == true){
+      whiteGroups = updateLib(board, boardSize, isBlack, whiteGroups); board = remove(board, boardSize, true, whiteGroups); //white
+      blackGroups = updateLib(board, boardSize, isBlack, blackGroups); board = remove(board, boardSize, false, blackGroups); //black
+    }
+    else{
+      whiteGroups = updateLib(board, boardSize, isBlack, blackGroups); board = remove(board, boardSize, true, whiteGroups); //white
+      blackGroups = updateLib(board, boardSize, isBlack, whiteGroups); board = remove(board, boardSize, false, blackGroups);} //black
+
+    //update board state
+
 
     boardPrint(boardSize, board);
   }
