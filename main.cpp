@@ -44,7 +44,7 @@ void boardPrint(int boardSize, std::vector<piece> board){
   }
 }
 
-//
+//updates the piece coulour
 piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
   int colour;
   if(isBlack == true){colour = 1;}else{colour =2;}
@@ -57,25 +57,29 @@ piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
 }
 
 //caculates the liberty of each piece
-std::vector<piece> updateLib(std::vector<piece> v, int boardSize){
+std::vector<int> updateLib(std::vector<piece> v, int boardSize, bool isBlack, std::vector<int> colourGroup){
+  bool colourState;
+
+  for(int i =0; i < colourGroup.size(); i++){
+    colourGroup.at(i) = 0;
+  }
+
   for(int i = 0; i < boardSize; i++){
     for(int j =0; j < boardSize; j++){
-      if(v.at(i*boardSize + j).state != 0){
+      if(v.at(i*boardSize + j).state == 1){colourState = true;}else if(v.at(i*boardSize + j).state == 2){colourState = false;}
+      if(v.at(i*boardSize + j).state != 0 && isBlack == colourState){
         v.at(i*boardSize + j).liberty = 0;
-        if(i != 0) {
-          if(v.at((i-1)*boardSize + j ).state == 0){v.at(i*boardSize + j).liberty += 1; }
-        }
-        if(i != boardSize - 1){ if( v.at((i+1)*boardSize + j).state == 0) {v.at(i*boardSize + j).liberty += 1; }}
-        if(j != 0 ){ if ( v.at(i*boardSize + j - 1).state == 0) {v.at(i*boardSize + j).liberty += 1; }}
-        if(j != boardSize - 1) {if ( v.at(i*boardSize + j + 1).state == 0 ) {v.at(i*boardSize + j).liberty += 1;}}
-        }
-
-
+        if(i != 0) { if(v.at((i-1)*boardSize + j ).state == 0){colourGroup.at(v.at(i*boardSize + j).group) += 1; }  } //down
+        if(i != boardSize - 1){ if( v.at((i+1)*boardSize + j).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //up
+        if(j != 0 ){ if ( v.at(i*boardSize + j - 1).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //left
+        if(j != boardSize - 1) {if ( v.at(i*boardSize + j + 1).state == 0 ) {colourGroup.at(v.at(i*boardSize + j).group) += 1;}} //right
+      }
     }
   }
-  return v;
+  return colourGroup;
 }
 
+//remove any peice with liberty = 0
 std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
   for(int i = 0; i < boardSize; i++){
     for(int j =0; j < boardSize; j++){
@@ -88,9 +92,9 @@ std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack){
   return v;
 }
 
+//detects if there allread stones to connect to
 std::vector<piece> removeGroup(std::vector<piece> v, int boardSize, bool isBlack, int group1, int group2){
 
-std::cout << "/* message */" << group1  << group2 <<' ';
   int stone;
   if(isBlack == true){stone = 1;}else{stone = 2;}
   std::cout << isBlack << '\n';
@@ -106,6 +110,7 @@ std::cout << "/* message */" << group1  << group2 <<' ';
   return v;
 }
 
+//main function contains main loop
 int main(){
   //initalise variables
   const int boardSize = 19;
@@ -170,10 +175,12 @@ int main(){
     if(groups == 0 && isBlack == true){board.at(x_at + y_at * boardSize).group = blackGroups.size(); blackGroups.push_back(0);}
     if(groups == 0 && isBlack == false){board.at(x_at + y_at * boardSize).group = whiteGroups.size(); whiteGroups.push_back(0);}
 
-
-    board = updateLib(board, boardSize);
+    //update board state
     board = remove(board, boardSize, isBlack);
 
+    //count group liberty
+    if(isBlack == true){whiteGroups = updateLib(board, boardSize, isBlack, whiteGroups); blackGroups = updateLib(board, boardSize, isBlack, blackGroups);}
+    else{whiteGroups = updateLib(board, boardSize, isBlack, blackGroups); blackGroups = updateLib(board, boardSize, isBlack, whiteGroups);}
 
     boardPrint(boardSize, board);
   }
