@@ -135,8 +135,8 @@ int main(){
     //while loop for accepting values
     while(acceptedVal == false){
       if(input.length() == 2 || input.length() ==3 ){
-        x_at = input.at(0) - 97;
-        y_at = input.at(1) - 49;
+        x_at = input.at(0) - 97; //char convestion to number
+        y_at = input.at(1) - 49; //char convestion to number
         if(input.length() == 3){y_at = (input.at(1)-48)*10+(input.at(2)-48)-1;}
         // std::cout << x_at << y_at << '\n';
         if(x_at >= 0 && y_at >= 0 && x_at < 19 && y_at < 19 && board.at(y_at*boardSize+x_at).state == 0){ break; }
@@ -155,7 +155,7 @@ int main(){
     if(x_at != 0){if(board.at(x_at + y_at * boardSize).state == board.at(x_at - 1 + y_at * boardSize).state ){std::cout << "test" << '\n';
       board.at(x_at + y_at * boardSize).group = board.at(x_at - 1+ y_at * boardSize).group; groups +=1;}}
     //right
-    if(x_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + 1 + y_at * boardSize).state ){
+    if(x_at != boardSize-1){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + 1 + y_at * boardSize).state ){
       if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + 1 + y_at * boardSize).group);}
       board.at(x_at + y_at * boardSize).group = board.at(x_at + 1 + y_at * boardSize).group; groups+=1;}}
     //up
@@ -163,7 +163,7 @@ int main(){
       if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at - 1)* boardSize).group);}
       board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at - 1) * boardSize).group;groups+=1;}}
     //down
-    if(y_at != boardSize){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + (y_at + 1) * boardSize).state ){
+    if(y_at != boardSize-1){if(board.at(x_at + y_at * boardSize).state == board.at(x_at + (y_at + 1) * boardSize).state ){
       if(groups > 0){board = removeGroup(board, boardSize, isBlack, board.at(x_at+ y_at * boardSize).group, board.at(x_at + (y_at + 1) * boardSize).group);}
       board.at(x_at + y_at * boardSize).group = board.at(x_at + (y_at + 1) * boardSize).group;groups+=1;}}
 
