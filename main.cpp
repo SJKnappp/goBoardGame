@@ -1,4 +1,4 @@
-#include "main.h"
+  #include "main.h"
 
 //initalise the start condition of the board
 std::vector<piece> initalBoard(const int boardSize){
@@ -15,15 +15,32 @@ std::vector<piece> initalBoard(const int boardSize){
 
 //prints out the board values
 void boardPrint(int boardSize, std::vector<piece> board){
+  bool showGroups = true; //debug option
+  //print top line
+  char letter ='a'; //keeps letter info
+  std::cout << "    "; //puts the first number in the right place
+  for(int i=0; i <boardSize; i++){
+    std::cout << letter << " "; //prints top row
+    letter += 1; // increase letter
+  }
+
+  std::cout << std::endl;
+
   for(int i =0; i < boardSize; i++){
+    std::cout << i + 1 << "  "; // prints the number
+    if(i < 9){std::cout << " ";} //handles that one digit number
     for(int j=0;j<boardSize;j++){
-      if(board.at(j+boardSize*i).state ==0){std::cout << "+ ";}
-      else if(board.at(j+boardSize*i).state == 1){std::cout << "B ";}
-      else if(board.at(j+boardSize*i).state == 2){std::cout << "W ";}
-      std::cout << board.at(j+boardSize*i).group;
+      if(board.at(j+boardSize*i).state ==0){std::cout << "+ ";} //detecs board state + for no peice
+      else if(board.at(j+boardSize*i).state == 1){std::cout << "B ";}//black
+      else if(board.at(j+boardSize*i).state == 2){std::cout << "W ";}//white
+      // std::cout << board.at(j+boardSize*i).group;
       // std::cout << board.at(j+boardSize*i).state << ' ' << j+boardSize*i << ' ';
+    }if(showGroups == true){ //shows the group numbers
+      for(int j= 0; j<boardSize; j++){
+        std::cout << board.at(j+boardSize*i).group;
+      }
     }
-    std::cout << '\n';
+    std::cout << '\n'; //ends the lines
   }
 }
 
@@ -92,10 +109,12 @@ std::cout << "/* message */" << group1  << group2 <<' ';
 int main(){
   //initalise variables
   const int boardSize = 19;
-  bool isBlack = false;
-  bool acceptedVal; int x_at; int y_at; int y_ten;
-  std::string input;
-  bool gameRunning = true;
+  bool isBlack = false; //colour
+  bool acceptedVal; int x_at; int y_at; int y_ten; //positional
+  std::string input; //cordinate input variables
+  bool gameRunning = true; //loop condition
+
+  //keeps track of group value
   std::vector<int> blackGroups;
   std::vector<int> whiteGroups;
   //setup the board and print intial condition
