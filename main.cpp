@@ -114,6 +114,16 @@ std::vector<piece> removeGroup(std::vector<piece> v, int boardSize, bool isBlack
   return v;
 }
 
+//returns a bool value if ko true for ko detected
+bool KoDetection(std::vector<piece> current, std::vector<piece> old, int boardSize){
+    for(unsigned i = 0; i < boardSize*boardSize; i++){
+      if(current.at(i).state != old.at(i).state){
+        return false;
+      }
+    }
+    return true;
+}
+
 //main function contains main loop
 int main(){
   //initalise variables
@@ -126,17 +136,24 @@ int main(){
   //keeps track of group value
   std::vector<int> blackGroups;
   std::vector<int> whiteGroups;
-  //setup the board and print intial condition
+  //setup tstd::cout << "/* message */" << '\n';he board and print intial condition
   std::vector<piece> board = initalBoard(boardSize);
+  std::vector<piece> oldTurn = board; //stores previous tern state
+  std::vector<piece> koDetec = board; //stores an old board version for ko detection
+  bool koDetected = false;
   boardPrint(boardSize, board);
 
   //start main loop
   while(gameRunning == true){
+
+    koDetec = oldTurn;
+    oldTurn = board;
+
     //dectects player and switches
-    if(isBlack == true){isBlack = false;}else{isBlack =true;}
+    if(isBlack == true && koDetected == false){isBlack = false;}else{isBlack =true;}
 
     //player possition
-    std::cout << "please input position ";
+    if(koDetected == false){std::cout << "please input position ";}else{std::cout << "ko Detected please reinput go";}
     if(isBlack == true){std::cout << "black ";} else{std::cout << "white ";} std::cout << ":  ";
     std::cin >> input;
     acceptedVal = false;
@@ -184,13 +201,15 @@ int main(){
       blackGroups = updateLib(board, boardSize, true, blackGroups); board = remove(board, boardSize, false, blackGroups); //black
     }
     else{
-      blackGroups = updateLib(board, boardSize, true, whiteGroups); board = remove(board, boardSize, false, blackGroups);} //black
-      whiteGroups = updateLib(board, boardSize, false, blackGroups); board = remove(board, boardSize, true, whiteGroups); //white
+      blackGroups = updateLib(board, boardSize, true, whiteGroups); board = remove(board, boardSize, false, blackGroups); //black
+      whiteGroups = updateLib(board, boardSize, false, blackGroups); board = remove(board, boardSize, true, whiteGroups);
+    } //white
 
 
     //update board state
 
-
-    boardPrint(boardSize, board);
+    koDetected = KoDetection(board, koDetec, boardSize);
+    if( koDetected == false){boardPrint(boardSize, board);}
+    else{ board = oldTurn; }
   }
 }
