@@ -58,21 +58,27 @@ piece updatePiece(std::vector<piece> v,int i,int j,int N, bool isBlack ){
 
 //caculates the liberty of each piece
 std::vector<int> updateLib(std::vector<piece> v, int boardSize, bool isBlack, std::vector<int> colourGroup){
-  bool colourState;
+  // std::cout << "/* message */" << '\n';
+  if(colourGroup.size() != 0){
+    bool colourState;
+    for(int i =0; i < colourGroup.size(); i++){
+      colourGroup.at(i) = 0;
+    }
 
-  for(int i =0; i < colourGroup.size(); i++){
-    colourGroup.at(i) = 0;
-  }
+    std::cout << colourGroup.size() << '\n';
 
-  for(int i = 0; i < boardSize; i++){
-    for(int j =0; j < boardSize; j++){
-      if(v.at(i*boardSize + j).state == 1){colourState = true;}else if(v.at(i*boardSize + j).state == 2){colourState = false;}
-      if(v.at(i*boardSize + j).state != 0 && isBlack == colourState){
-        v.at(i*boardSize + j).liberty = 0;
-        if(i != 0) { if(v.at((i-1)*boardSize + j ).state == 0){colourGroup.at(v.at(i*boardSize + j).group) += 1; }  } //down
-        if(i != boardSize - 1){ if( v.at((i+1)*boardSize + j).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //up
-        if(j != 0 ){ if ( v.at(i*boardSize + j - 1).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //left
-        if(j != boardSize - 1) {if ( v.at(i*boardSize + j + 1).state == 0 ) {colourGroup.at(v.at(i*boardSize + j).group) += 1;}} //right
+    for(int i = 0; i < boardSize; i++){
+      for(int j =0; j < boardSize; j++){
+        if(v.at(i*boardSize + j).state == 1){colourState = true;}else if(v.at(i*boardSize + j).state == 2){colourState = false;}
+        if(v.at(i*boardSize + j).state != 0 && isBlack == colourState){
+          v.at(i*boardSize + j).liberty = 0;
+          if(i != 0) { if(v.at((i-1)*boardSize + j ).state == 0){colourGroup.at(v.at(i*boardSize + j).group) += 1; }  } //down
+          std::cout << v.at(i*boardSize + j).group << '\n';
+          if(i != boardSize - 1){ if( v.at((i+1)*boardSize + j).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //up
+          // std::cout << "/* message */" << '\n';
+          if(j != 0 ){ if ( v.at(i*boardSize + j - 1).state == 0) {colourGroup.at(v.at(i*boardSize + j).group) += 1; }} //left
+          if(j != boardSize - 1) {if ( v.at(i*boardSize + j + 1).state == 0 ) {colourGroup.at(v.at(i*boardSize + j).group) += 1;}} //right
+        }
       }
     }
   }
@@ -82,19 +88,21 @@ std::vector<int> updateLib(std::vector<piece> v, int boardSize, bool isBlack, st
 //remove any peice with liberty = 0
 std::vector<piece> remove(std::vector<piece> v, int boardSize, int isBlack, std::vector<int> group){
   std::cout << "/* message */" << '\n';
-  int pstate; //colour state
-  if(isBlack == true){pstate = 2;}else{pstate = 1;}//looks at opersit colour
+  if(group.size() != 0){
+    int pstate; //colour state
+    if(isBlack == true){pstate = 2;}else{pstate = 1;}//looks at opersit colour
 
-  for(int i = 0; i < boardSize; i++){
-    for(int j =0; j < boardSize; j++){
-      if(v.at((i)*boardSize + j).state == pstate){
-        if(group.at(v.at((i)*boardSize + j).group) ==0){
-          v.at((i)*boardSize + j).state = 0;
-          v.at((i)*boardSize + j).group = 0;
+    for(int i = 0; i < boardSize; i++){
+      for(int j =0; j < boardSize; j++){
+        if(v.at((i)*boardSize + j).state == pstate){
+          if(group.at(v.at((i)*boardSize + j).group) ==0){
+            v.at((i)*boardSize + j).state = 0;
+            v.at((i)*boardSize + j).group = 0;
+          }
         }
       }
-    }
   }
+}
   return v;
 }
 
